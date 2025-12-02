@@ -1,6 +1,5 @@
 "use client"
 import dynamic from 'next/dynamic';
-// import ImageUploading, { ImageListType } from 'react-images-uploading';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import Link from 'next/link';
