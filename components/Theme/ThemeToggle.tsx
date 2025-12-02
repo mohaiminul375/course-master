@@ -4,7 +4,9 @@ import { useTheme } from "next-themes";
 
 const ThemeToggle = () => {
     const { setTheme } = useTheme()
-    const currentTheme = localStorage.getItem('theme')
+    const currentTheme = typeof window !== "undefined"
+        ? localStorage.getItem("theme")
+        : null;
     if (!currentTheme) {
         setTheme('system');
     }

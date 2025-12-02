@@ -12,6 +12,7 @@ import { CiMenuFries } from "react-icons/ci";
 import Image from 'next/image';
 // import logo from "../../../public/logo.png";
 import { Quintessential } from "next/font/google";
+import { useAuth } from '@/Provider/AuthProvider';
 export const quintessential = Quintessential({
     weight: '400',
     subsets: ['latin'],
@@ -26,9 +27,8 @@ const navItems = [
     },
 ];
 const Navbar = () => {
-    // const { user, logOut } = useAuth();
-    const user = false;
-    const logOut = null;
+    const { user, logOut } = useAuth();
+   
     // console.log(user)
     const pathname = usePathname();
     return (

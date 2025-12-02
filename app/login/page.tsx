@@ -9,13 +9,14 @@ import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { SyncLoader } from 'react-spinners';
+import { useUserLogin } from './api/route';
 type Inputs = {
     email: string
     password: string
 }
 const LottiePlayer = dynamic(() => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player), { ssr: false });
 const Login = () => {
-    const isPending = false;
+    const { mutateAsync, isPending, } = useUserLogin();
     const [showPassword, setShowPassword] = useState(false);
     const {
         register,
@@ -23,7 +24,7 @@ const Login = () => {
         formState: { errors },
     } = useForm<Inputs>()
     const onSubmit: SubmitHandler<Inputs> = async (user_data) => {
-console.log(user_data)
+        await mutateAsync(user_data)
     }
 
     return (
