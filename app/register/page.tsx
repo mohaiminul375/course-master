@@ -12,6 +12,8 @@ import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { SyncLoader } from 'react-spinners';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import axios from "axios";
+import { useCreateUser } from './api/route';
 const LottiePlayer = dynamic(() => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player), { ssr: false });
 type Inputs = {
     name: string,
@@ -20,7 +22,7 @@ type Inputs = {
     avatar: string;
 }
 const Register = () => {
-    const isPending = false;
+    const { mutateAsync, isPending, } = useCreateUser();
     const [showPassword, setShowPassword] = useState(false);
     const [images, setImages] = useState<ImageListType>([]);
     const {
@@ -34,8 +36,32 @@ const Register = () => {
             toast.error("Image is required!");
             return;
         }
-        console.log(user_data, images[0].file)
+        const file = images[0].file; // get first file from FileList
+        console.log(file)
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "courseMaster-cloud"); // from Cloudinary
+        // formData.append("cloud_name", "da5uoyv65"); // optional in unsigned
+        try {
+            const response = await axios.post(
+                "https://api.cloudinary.com/v1_1/da5uoyv65/image/upload",
+                formData,
+                { headers: { "content-type": "multipart/form-data" } }
+            );
+            console.log(response)
+            user_data.avatar = response?.data?.url
+            console.log(user_data)
+            // user data save to DB
+            await mutateAsync(user_data)
+            reset()
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : "An error occurred");
+        }
     }
+
+
+
+
 
     // Handle image change
     const handleImageChange = (imageList: ImageListType) => {
@@ -44,7 +70,7 @@ const Register = () => {
     return (
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 px-4 lg:px-16 items-center">
             <head>
-                <title>Login | Course Master</title>
+                <title>Register | Course Master</title>
             </head>
             {/* Left side: Animation */}
             <div className="hidden md:flex justify-center">
